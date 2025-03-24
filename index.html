@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Y5 BMK EJAAN APR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#4F46E5',
+        secondary: '#6366F1'
+      },
+      borderRadius: {
+        'none': '0px',
+        'sm': '2px',
+        DEFAULT: '4px',
+        'md': '8px',
+        'lg': '12px',
+        'xl': '16px',
+        '2xl': '20px',
+        '3xl': '24px',
+        'full': '9999px',
+        'button': '4px'
+      }
+    }
+  }
+}
+</script>
+<style>
+  body {
+    min-height: 1024px;
+    background: #f8fafc;
+    font-family: 'Inter', sans-serif;
+  }
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .game-title {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 36px;
+    color: #4F46E5;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .group-select {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .group-select select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 2px solid #4F46E5;
+    cursor: pointer;
+  }
+  .game-area {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  }
+  .chinese-meaning {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1e293b;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  .chinese-meaning:hover {
+    color: #4F46E5;
+  }
+  .letter-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .letter-box {
+    width: 50px;
+    height: 50px;
+    background: #4F46E5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transform: perspective(1000px) rotateX(10deg);
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  }
+  .letter-box:hover {
+    transform: perspective(1000px) rotateX(0deg) translateY(-5px);
+  }
+  .word-construction {
+    min-height: 60px;
+    border: 2px dashed #e2e8f0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+  }
+  .progress-container {
+    margin-bottom: 15px;
+  }
+  .progress-bar {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress {
+    height: 100%;
+    background: #4F46E5;
+    transition: width 0.3s;
+  }
+  .word-counter {
+    text-align: center;
+    color: #64748b;
+    margin-top: 6px;
+  }
+  .lives {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+  .heart {
+    color: #ef4444;
+    font-size: 20px;
+  }
+  .controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+  .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-primary {
+    background: #4F46E5;
+    color: white;
+  }
+  .btn-primary:hover {
+    background: #4338ca;
+  }
+  .stats {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .stat-item {
+    text-align: center;
+  }
+  .stat-label {
+    color: #64748b;
+    font-size: 14px;
+  }
+  .stat-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e293b;
+  }
+  @keyframes correct {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  .correct {
+    animation: correct 0.5s ease;
+  }
+  @media (max-width: 768px) {
+    .game-title {
+      font-size: 28px;
+    }
+    .chinese-meaning {
+      font-size: 24px;
+    }
+    .letter-box {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+    }
+    .btn {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+    .stat-value {
+      font-size: 18px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1 class="game-title">Y5 BMK EJAAN APR</h1>
+  <div class="group-select">
+    <select id="groupSelect">
+      <option value="0">选择组别</option>
+      <option value="1">第一组 8-14</option>
+      <option value="2">第二组 15-21</option>
+      <option value="3">第三组 22-28</option>
+      <option value="4">第四组 1-7</option>
+    </select>
+  </div>
+  <div class="game-area">
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-label">Score</div>
+        <div class="stat-value" id="score">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Time</div>
+        <div class="stat-value" id="timer">00:00</div>
+      </div>
+    </div>
+    <div class="lives">
+      <i class="fas fa-heart heart"></i>
+      <i class="fas fa-heart heart"></i>
+      <i class="fas fa-heart heart"></i>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress" style="width: 0%"></div>
+      </div>
+      <div class="word-counter">0/8</div>
+    </div>
+    <div class="chinese-meaning-container">
+      <div class="chinese-meaning" id="meaning"></div>
+      <button class="btn btn-primary" id="pronounceBtn"><i class="fas fa-volume-up"></i></button>
+    </div>
+    <div class="letter-container" id="letters"></div>
+    <div class="word-construction" id="construction"></div>
+    <div class="controls">
+      <button class="btn btn-primary" id="startBtn">开始游戏</button>
+      <button class="btn btn-primary" id="pauseBtn">暂停游戏</button>
+    </div>
+  </div>
+</div>
+<!-- 音频文件 -->
+<audio id="bgMusic" loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+<audio id="correctSound">
+  <source src="https://www.soundjay.com/button/beep-01a.mp3" type="audio/mpeg">
+</audio>
+<audio id="wrongSound">
+  <source src="https://www.soundjay.com/button/beep-02.mp3" type="audio/mpeg">
+</audio>
+<script>
+  const groups = [
+    [ // 第一组 8-14
+      { word: "Cara-cara", meaning: "方法" },
+      { word: "Langkah-langkah", meaning: "方法" },
+      { word: "Pada pendapat saya", meaning: "在我看来" },
+      { word: "Kebaikan", meaning: "好处" },
+      { word: "Manfaat", meaning: "好处" },
+      { word: "Faedah", meaning: "好处" },
+      { word: "Mengisi masa lapang", meaning: "填补空闲时间" },
+      { word: "Tidak membazir masa", meaning: "不浪费时间" },
+      { word: "Menyihatkan badan", meaning: "让身体健康" },
+      { word: "Tidak membuang masa", meaning: "不浪费时间" },
+      { word: "Menumpukan perhatian", meaning: "专心" }
+    ],
+    [ // 第二组 15-21
+      { word: "Terdapat banyak", meaning: "得到很多" },
+      { word: "Contohnya", meaning: "例如" },
+      { word: "Misalnya", meaning: "例如" },
+      { word: "Hal ini demikian kerana", meaning: "这是因为" },
+      { word: "Keputusan yang cemerlang", meaning: "优秀的成绩" },
+      { word: "Bertanya kepada guru", meaning: "发问老师" },
+      { word: "Menghadapi masalah", meaning: "面对问题" },
+      { word: "Dalam peperiksaan", meaning: "在考试中" },
+      { word: "Belajar dalam kumpulan", meaning: "小组学习" }
+    ],
+    [ // 第三组 22-28
+      { word: "Menguruskan masa", meaning: "管理时间" },
+      { word: "Berkongsi pendapat", meaning: "分享意见" },
+      { word: "Salah satu aktiviti", meaning: "其中一个" },
+      { word: "Membuat pilihan", meaning: "做出选择" },
+      { word: "Mementingkan", meaning: "注重" },
+      { word: "Mengambil berat", meaning: "注重" },
+      { word: "Mencegah", meaning: "避免" },
+      { word: "Mengelakkan", meaning: "避免" },
+      { word: "Mengurangkan", meaning: "减少" },
+      { word: "Meringankan", meaning: "减轻" },
+      { word: "Pencemaran udara", meaning: "空气污染" }
+    ],
+    [ // 第四组 1-7
+      { word: "Pembaziran dapat dielakkan", meaning: "浪费可以被避免" },
+      { word: "Mengadakan", meaning: "举办" },
+      { word: "Menjalankan", meaning: "进行" },
+      { word: "Membuang sampah merata-rata", meaning: "随地扔垃圾" },
+      { word: "Berbincang secara terbuka", meaning: "开放式讨论" },
+      { word: "Menyelesaikan masalah", meaning: "解决问题" },
+      { word: "Meluangkan masa rehat", meaning: "空出休息时间" },
+      { word: "Mengurangkan tekanan", meaning: "减少压力" },
+      { word: "Pelbagai jenis peralatan", meaning: "各种各样的用具" }
+    ]
+  ];
+
+  let currentWord = null;
+  let currentLetters = [];
+  let selectedLetters = [];
+  let score = 0;
+  let lives = 3;
+  let wordIndex = 0;
+  let timer = null;
+  let seconds = 0;
+  let currentGroup = null;
+  let isPaused = false;
+  const meaningElement = document.getElementById('meaning');
+  const lettersContainer = document.getElementById('letters');
+  const constructionArea = document.getElementById('construction');
+  const scoreElement = document.getElementById('score');
+  const timerElement = document.getElementById('timer');
+  const startBtn = document.getElementById('startBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const progressBar = document.querySelector('.progress');
+  const wordCounter = document.querySelector('.word-counter');
+  const hearts = document.querySelectorAll('.heart');
+  const pronounceBtn = document.getElementById('pronounceBtn');
+  const bgMusic = document.getElementById('bgMusic');
+  const correctSound = document.getElementById('correctSound');
+  const wrongSound = document.getElementById('wrongSound');
+  const groupSelect = document.getElementById('groupSelect');
+
+  // 设置背景音乐音量
+  bgMusic.volume = 0.3; // 音量为30%
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function startGame() {
+    if (!currentGroup) {
+      alert("请先选择一个组别！");
+      return;
+    }
+    wordIndex = 0;
+    score = 0;
+    lives = 3;
+    seconds = 0;
+    scoreElement.textContent = score;
+    updateHearts();
+    nextWord();
+    startTimer();
+    bgMusic.play(); // 播放背景音乐
+    isPaused = false;
+    pauseBtn.textContent = "暂停游戏";
+  }
+
+  function pauseGame() {
+    if (isPaused) {
+      // 恢复游戏
+      startTimer();
+      bgMusic.play();
+      isPaused = false;
+      pauseBtn.textContent = "暂停游戏";
+    } else {
+      // 暂停游戏
+      if (timer) clearInterval(timer);
+      bgMusic.pause();
+      isPaused = true;
+      pauseBtn.textContent = "继续游戏";
+    }
+  }
+
+  function nextWord() {
+    if (wordIndex >= currentGroup.length) {
+      alert(`Game Over! Final Score: ${score}`);
+      startGame();
+      return;
+    }
+    if (timer) clearInterval(timer);
+    startTimer();
+    currentWord = currentGroup[wordIndex];
+    meaningElement.textContent = currentWord.meaning;
+    meaningElement.style.cursor = 'pointer';
+    meaningElement.onclick = () => playAudio(currentWord.meaning);
+    pronounceBtn.onclick = () => playAudio(currentWord.meaning);
+    currentLetters = currentWord.word.split('');
+    selectedLetters = [];
+    const shuffledLetters = shuffleArray([...currentLetters]);
+    lettersContainer.innerHTML = '';
+    shuffledLetters.forEach(letter => {
+      const letterBox = document.createElement('div');
+      letterBox.className = 'letter-box';
+      letterBox.textContent = letter;
+      letterBox.onclick = () => selectLetter(letter, letterBox);
+      lettersContainer.appendChild(letterBox);
+    });
+    constructionArea.innerHTML = '';
+    updateProgress();
+  }
+
+  // 语音播放功能
+  function playAudio(text) {
+    if (window.speechSynthesis) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN'; // 设置为中文
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  function selectLetter(letter, element) {
+    if (isPaused) return;
+    
+    if (selectedLetters.length < currentWord.word.length) {
+      selectedLetters.push(letter);
+      const letterElement = document.createElement('div');
+      letterElement.className = 'letter-box';
+      letterElement.textContent = letter;
+      constructionArea.appendChild(letterElement);
+      element.style.visibility = 'hidden';
+      checkWord();
+    }
+  }
+
+  function checkWord() {
+    if (selectedLetters.length === currentWord.word.length) {
+      const constructedWord = selectedLetters.join('');
+      if (constructedWord === currentWord.word) {
+        correctSound.play();
+        score += 10;
+        scoreElement.textContent = score;
+        wordIndex++;
+        setTimeout(() => {
+          nextWord();
+        }, 1000);
+      } else {
+        wrongSound.play();
+        lives--;
+        updateHearts();
+        if (lives <= 0) {
+          alert(`Game Over! Final Score: ${score}`);
+          startGame();
+        } else {
+          setTimeout(() => {
+            resetCurrentWord();
+          }, 1000);
+        }
+      }
+    }
+  }
+
+  function resetCurrentWord() {
+    selectedLetters = [];
+    constructionArea.innerHTML = '';
+    const letterBoxes = lettersContainer.querySelectorAll('.letter-box');
+    letterBoxes.forEach(box => {
+      box.style.visibility = 'visible';
+    });
+  }
+
+  function updateHearts() {
+    hearts.forEach((heart, index) => {
+      if (index < lives) {
+        heart.style.display = 'inline-block';
+      } else {
+        heart.style.display = 'none';
+      }
+    });
+  }
+
+  function startTimer() {
+    if (isPaused) return;
+    
+    seconds = 0;
+    updateTimerDisplay();
+    timer = setInterval(() => {
+      seconds++;
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
+
+  function resetTimer() {
+    if (timer) clearInterval(timer);
+    seconds = 0;
+    updateTimerDisplay();
+  }
+
+  function updateProgress() {
+    const progress = (wordIndex / currentGroup.length) * 100;
+    progressBar.style.width = `${progress}%`;
+    wordCounter.textContent = `${wordIndex}/${currentGroup.length}`;
+  }
+
+  // 事件监听
+  startBtn.addEventListener('click', startGame);
+  pauseBtn.addEventListener('click', pauseGame);
+
+  // 组别选择
+  groupSelect.addEventListener('change', (e) => {
+    const groupIndex = parseInt(e.target.value) - 1;
+    if (groupIndex >= 0 && groupIndex < groups.length) {
+      currentGroup = groups[groupIndex];
+      startGame();
+    } else {
+      currentGroup = null;
+    }
+  });
+
+  // 初始化
+  updateHearts();
+</script>
+</body>
+</html>
